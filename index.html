@@ -1,104 +1,63 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f4f4f4;
-    color: #333;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boukie's Grill - Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Boukie's Grill!</h1>
+        <nav>
+            <a href="index.html">View Menu</a>
+            <a href="admin-menu.html">Admin: Manage Menu</a>
+            <a href="admin-orders.html">Admin: View Orders</a>
+        </nav>
 
+        <h2>Our Menu</h2>
+        <ul id="customer-menu-list">
+            <!-- Menu items will be loaded here by JavaScript -->
+        </ul>
+    </div>
 
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+    <script>
+        // JavaScript for the Customer Menu Page (Our "Magic Animation")
 
+        // Get the "Magic Backpack" (localStorage)
+        const menuListElement = document.getElementById('customer-menu-list');
 
-h1, h2 {
-    color: #5a3e36; /* Boukie's Brown */
-}
+        function displayCustomerMenu() {
+            menuListElement.innerHTML = ''; // Clear existing menu
+            // Get menu items from the Magic Backpack
+            const menuItems = JSON.parse(localStorage.getItem('boukiesMenuItems')) || [];
 
+            if (menuItems.length === 0) {
+                menuListElement.innerHTML = '<li>The menu is currently empty. Check back soon!</li>';
+                return;
+            }
 
-a, button {
-    display: inline-block;
-    padding: 10px 15px;
-    margin: 10px 5px 10px 0;
-    background-color: #ff9800; /* Boukie's Orange */
-    color: white;
-    text-decoration: none;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
+            menuItems.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <div>
+                        <span class="menu-item-name">${item.name}</span> - 
+                        <span class="menu-item-price">$${parseFloat(item.price).toFixed(2)}</span>
+                    </div>
+                    <button onclick="orderItem('${item.name}')">Order This Item</button>
+                `;
+                menuListElement.appendChild(listItem);
+            });
+        }
 
-a:hover, button:hover {
-    background-color: #e68a00;
-}
+        function orderItem(itemName) {
+            // Put the item name in the Magic Backpack temporarily so the order form knows what's being ordered
+            localStorage.setItem('boukiesCurrentItemToOrder', itemName);
+            // Go to the order form page
+            window.location.href = 'order-form.html';
+        }
 
-
-input[type="text"], input[type="number"], textarea {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    background-color: #fff;
-    border: 1px solid #eee;
-    padding: 10px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    display: flex; /* For aligning item and delete button */
-    justify-content: space-between; /* For aligning item and delete button */
-    align-items: center; /* For aligning item and delete button */
-}
-
-
-.admin-disclaimer {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
-
-
-nav {
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #5a3e36;
-}
-
-nav a {
-    margin-right: 15px;
-    background-color: #795548; /* Darker brown for nav */
-}
-nav a:hover {
-    background-color: #5d4037;
-}
-
-
-.menu-item-name {
-    font-weight: bold;
-}
-.menu-item-price {
-    color: #008000; /* Green for price */
-}
-
-
-.order-details {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #e8f5e9; /* Light green for order confirmation */
-    border-left: 5px solid #4CAF50; /* Green accent */
-}
+        // When the page loads, display the menu
+        window.onload = displayCustomerMenu;
+    </script>
+</body>
