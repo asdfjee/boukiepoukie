@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Manage Menu - Boukie's Grill</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Boukie's Menu</h1>
+        <nav>
+            <a href="index.html">View Customer Menu</a>
+            <a href="admin-menu.html">Manage Menu</a>
+            <a href="admin-orders.html">View Orders</a>
+        </nav>
+
+        <div class="admin-disclaimer">
+            Note: This area would normally require an admin login.
+        </div>
+
+        <h2>Add New Menu Item</h2>
+        <form id="add-menu-item-form">
+            <label for="item-name">Item Name:</label>
+            <input type="text" id="item-name" required>
+
+            <label for="item-price">Item Price ($):</label>
+            <input type="number" id="item-price" step="0.01" min="0" required>
+
+            <button type="submit">Add Item</button>
+        </form>
+
+        <h2>Current Menu</h2>
+        <ul id="admin-menu-list">
+            <!-- Menu items will be loaded here -->
+        </ul>
+    </div>
+
+    <script>
+        // JavaScript for the Admin Menu Management Page
+        const addMenuItemForm = document.getElementById('add-menu-item-form');
+        const adminMenuListElement = document.getElementById('admin-menu-list');
+
+        function loadAdminMenu() {
+            adminMenuListElement.innerHTML = ''; // Clear existing list
+            const menuItems = JSON.parse(localStorage.getItem('boukiesMenuItems')) || [];
+
+            if (menuItems.length === 0) {
+                adminMenuListElement.innerHTML = '<li>No items in the menu yet.</li>';
+                return;
+            }
+
+            menuItems.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <div>
+                        <span class="menu-item-name">${item.name}</span> - 
+                        <span class="menu-item-price">$${parseFloat(item.price).toFixed(2)}</span>
+                    </div>
+                    <button onclick="deleteMenuItem(${index})">Delete</button> 
+                `; // We use index to delete
+                adminMenuListElement.appendChild(listItem);
+            });
+        }
+
+        addMenuItemForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const itemName = document.getElementById('item-name').value;
+            const itemPrice = document.getElementById('item-price').value;
+
+            const newItem = { name: itemName, price: itemPrice };
+            
+            let menuItems = JSON.parse(localStorage.getItem('boukiesMenuItems')) || [];
+            menuItems.push(newItem);
+            localStorage.setItem('boukiesMenuItems', JSON.stringify(menuItems));
+
+            addMenuItemForm.reset(); // Clear the form
+            loadAdminMenu(); // Refresh the displayed list
+        });
+
+        function deleteMenuItem(itemIndex) {
+            let menuItems = JSON.parse(localStorage.getItem('boukiesMenuItems')) || [];
+            // Remove item by index
+            menuItems.splice(itemIndex, 1); 
+            localStorage.setItem('boukiesMenuItems', JSON.stringify(menuItems));
+            loadAdminMenu(); // Refresh
+        }
+
+        // Load menu when page opens
+        window.onload = loadAdminMenu;
+    </script>
+</body>
+</html>
