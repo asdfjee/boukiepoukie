@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: View Orders - Boukie's Grill</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>View Customer Orders</h1>
+        <nav>
+            <a href="index.html">View Customer Menu</a>
+            <a href="admin-menu.html">Manage Menu</a>
+            <a href="admin-orders.html">View Orders</a>
+        </nav>
+
+        <div class="admin-disclaimer">
+            Note: This area would normally require an admin login.
+        </div>
+
+        <h2>Received Orders</h2>
+        <ul id="admin-order-list">
+            <!-- Orders will be loaded here -->
+        </ul>
+    </div>
+
+    <script>
+        // JavaScript for the Admin View Orders Page
+        const adminOrderListElement = document.getElementById('admin-order-list');
+
+        function loadAdminOrders() {
+            adminOrderListElement.innerHTML = ''; // Clear existing list
+            const customerOrders = JSON.parse(localStorage.getItem('boukiesCustomerOrders')) || [];
+
+            if (customerOrders.length === 0) {
+                adminOrderListElement.innerHTML = '<li>No orders received yet.</li>';
+                return;
+            }
+
+            // Display newest orders first
+            customerOrders.slice().reverse().forEach(order => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <span class="menu-item-name">${order.name}</span> - 
+                    Quantity: ${order.quantity} 
+                    (<em>Ordered: ${order.timestamp}</em>)
+                `;
+                adminOrderListElement.appendChild(listItem);
+            });
+        }
+
+        // Load orders when page opens
+        window.onload = loadAdminOrders;
+    </script>
+</body>
+</html>
