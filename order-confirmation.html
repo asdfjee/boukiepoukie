@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Boukie's Grill</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Order Confirmation</h1>
+        
+        <div id="confirmation-message" class="order-details">
+            <!-- Confirmation message will be loaded here -->
+        </div>
+
+        <a href="index.html">Back to Menu</a>
+    </div>
+
+    <script>
+        // JavaScript for the Order Confirmation Page
+        const lastOrderName = localStorage.getItem('boukiesLastOrderName');
+        const lastOrderQuantity = localStorage.getItem('boukiesLastOrderQuantity');
+        const confirmationMessageElement = document.getElementById('confirmation-message');
+
+        if (lastOrderName && lastOrderQuantity) {
+            confirmationMessageElement.innerHTML = `<p>Thank you! Your order for <strong>${lastOrderQuantity} x ${lastOrderName}</strong> has been placed.</p>`;
+            // Optional: Clear these temporary items from localStorage after displaying
+            localStorage.removeItem('boukiesLastOrderName');
+            localStorage.removeItem('boukiesLastOrderQuantity');
+            localStorage.removeItem('boukiesCurrentItemToOrder'); // Also clear this one
+        } else {
+            confirmationMessageElement.innerHTML = '<p>There was an issue retrieving your order details. Please check with Boukie\'s.</p>';
+        }
+    </script>
+</body>
+</html>
