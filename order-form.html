@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Item - Boukie's Grill</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Order Your Item</h1>
+        <nav>
+            <a href="index.html">Back to Menu</a>
+        </nav>
+
+        <div id="item-to-order-display">
+            <!-- Item name will be shown here -->
+        </div>
+
+        <form id="order-form">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" required>
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript for the Order Form Page
+
+        // Get item name from Magic Backpack
+        const itemNameToOrder = localStorage.getItem('boukiesCurrentItemToOrder');
+        const itemDisplayElement = document.getElementById('item-to-order-display');
+        const orderForm = document.getElementById('order-form');
+
+        if (itemNameToOrder) {
+            itemDisplayElement.innerHTML = `<h2>You are ordering: <span class="menu-item-name">${itemNameToOrder}</span></h2>`;
+        } else {
+            itemDisplayElement.innerHTML = '<p>No item selected. Please go back to the menu.</p>';
+            orderForm.style.display = 'none'; // Hide form if no item
+        }
+
+        orderForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const quantity = document.getElementById('quantity').value;
+            const order = {
+                name: itemNameToOrder,
+                quantity: parseInt(quantity), // Make sure quantity is a number
+                timestamp: new Date().toLocaleString() // Add a timestamp
+            };
+
+            // Get existing orders from Magic Backpack, or start a new list
+            let customerOrders = JSON.parse(localStorage.getItem('boukiesCustomerOrders')) || [];
+            customerOrders.push(order);
+            localStorage.setItem('boukiesCustomerOrders', JSON.stringify(customerOrders));
+
+            // Store order details temporarily for the confirmation page
+            localStorage.setItem('boukiesLastOrderName', order.name);
+            localStorage.setItem('boukiesLastOrderQuantity', order.quantity);
+
+
+            // Go to confirmation page
+            window.location.href = 'order-confirmation.html';
+        });
+    </script>
+</body>
+</html>
